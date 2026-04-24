@@ -1,0 +1,166 @@
+<%- include('partials/header') %>
+
+<main>
+  <!-- ── Hero ── -->
+  <section class="hero hero-video">
+    <div class="hero-bg">
+      <video
+        class="hero-video-el"
+        src="https://cdn.shopify.com/videos/c/o/v/0b3031a406a5424fb4214cb6c351a702.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="https://www.belle-noor.in/cdn/shop/files/White_Grey_Modern_Fashion_Sale_Photo_Collage_Banner_1880_x_720_px_1.png?v=1742635425&width=3840"
+      ></video>
+      <div class="hero-overlay"></div>
+      <div class="hero-grid-lines" aria-hidden="true"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-sub reveal-up">
+        <span class="hero-sub-line"></span>
+        Fashion Crafted for Her
+        <span class="hero-sub-line"></span>
+      </p>
+      <h1 class="hero-title reveal-up" style="--delay:.15s">
+        <span class="hero-word">Timeless</span>
+        <span class="hero-word hero-word-gold">Style,</span>
+        <br />
+        <span class="hero-word">Effortless</span>
+        <span class="hero-word hero-word-gold">Wear</span>
+      </h1>
+      <p class="hero-tag reveal-up" style="--delay:.3s">Crafted for the modern muse — where heritage meets tomorrow.</p>
+      <div class="hero-cta reveal-up" style="--delay:.45s">
+        <a href="/collections/all" class="btn btn-hero btn-magnetic">
+          <span>Shop Now</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/collections/new-arrivals" class="btn btn-ghost btn-magnetic">
+          <span>New Arrivals</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll-cue" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ── Marquee Ticker ── -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>✦ Free Shipping Across India</span>
+      <span>✦ Timeless Style</span>
+      <span>✦ Effortless Wear</span>
+      <span>✦ Use Code BELL20 for 20% Off</span>
+      <span>✦ Cash on Delivery Available</span>
+      <span>✦ Crafted with Care</span>
+      <span>✦ Free Shipping Across India</span>
+      <span>✦ Timeless Style</span>
+      <span>✦ Effortless Wear</span>
+      <span>✦ Use Code BELL20 for 20% Off</span>
+      <span>✦ Cash on Delivery Available</span>
+      <span>✦ Crafted with Care</span>
+    </div>
+  </div>
+
+  <!-- ── New Arrivals ── -->
+  <section class="section" data-reveal>
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">✦ Just Dropped</p>
+        <h2 class="section-title">New Arrivals</h2>
+      </div>
+      <a href="/collections/new-arrivals" class="view-all">View All <span class="arrow-anim">→</span></a>
+    </div>
+    <div class="product-grid">
+      <% newArrivals.forEach(product => { %>
+        <%- include('partials/product-card', { product }) %>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ── Category Banner ── -->
+  <section class="category-banners" data-reveal>
+    <a href="/collections/dresses" class="cat-banner">
+      <img src="https://www.belle-noor.in/cdn/shop/files/virtual-photoshoot-2_1.jpg?v=1765598265" alt="Everyday Elegance" />
+      <div class="cat-banner-inner">
+        <p class="cat-banner-eyebrow">Everyday Elegance</p>
+        <div class="cat-banner-label">Dresses &amp; Co-Ords</div>
+        <span class="cat-banner-cta">Explore <span class="arrow-anim">→</span></span>
+      </div>
+    </a>
+    <a href="/collections/kurti" class="cat-banner">
+      <img src="https://www.belle-noor.in/cdn/shop/files/WhatsApp_Image_2025-03-22_at_19.14.43_b1e5b0dd.jpg?v=1742649332" alt="Ethnic Essentials" />
+      <div class="cat-banner-inner">
+        <p class="cat-banner-eyebrow">Heritage Reimagined</p>
+        <div class="cat-banner-label">Ethnic Essentials</div>
+        <span class="cat-banner-cta">Explore <span class="arrow-anim">→</span></span>
+      </div>
+    </a>
+  </section>
+
+  <!-- ── Women Tops ── -->
+  <section class="section" data-reveal>
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">✦ Everyday Elegance</p>
+        <h2 class="section-title">Women Tops</h2>
+      </div>
+      <a href="/collections/women-tops" class="view-all">View All <span class="arrow-anim">→</span></a>
+    </div>
+    <div class="product-grid product-grid-4">
+      <% womenTops.forEach(product => { %>
+        <%- include('partials/product-card', { product }) %>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ── Kurti ── -->
+  <section class="section section-dark" data-reveal>
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">✦ Heritage Reimagined</p>
+        <h2 class="section-title">Kurti</h2>
+      </div>
+      <a href="/collections/kurti" class="view-all">View All <span class="arrow-anim">→</span></a>
+    </div>
+    <div class="product-grid product-grid-4">
+      <% kurtis.forEach(product => { %>
+        <%- include('partials/product-card', { product }) %>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ── Festive Collection ── -->
+  <section class="section" data-reveal>
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">✦ Celebration Ready</p>
+        <h2 class="section-title">Festive Collection</h2>
+      </div>
+      <a href="/collections/festive" class="view-all">View All <span class="arrow-anim">→</span></a>
+    </div>
+    <div class="product-grid product-grid-4">
+      <% festive.forEach(product => { %>
+        <%- include('partials/product-card', { product }) %>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ── WhatsApp CTA ── -->
+  <section class="whatsapp-cta" data-reveal>
+    <div class="whatsapp-cta-glow" aria-hidden="true"></div>
+    <div>
+      <h3>Have questions or need styling advice?</h3>
+      <p>Chat with us directly on WhatsApp – we're here to help!</p>
+    </div>
+    <a href="https://wa.me/917016416645" target="_blank" class="btn btn-whatsapp btn-magnetic">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      WhatsApp Us
+    </a>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

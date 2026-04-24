@@ -1,0 +1,26 @@
+<div class="product-card">
+  <a href="/products/<%= product.handle %>" class="product-card-img-wrap">
+    <img src="<%= product.images[0] %>" alt="<%= product.title %>" loading="lazy" />
+    <% if (product.comparePrice) { %>
+      <span class="product-badge">Sale</span>
+    <% } %>
+  </a>
+  <div class="product-card-info">
+    <h3 class="product-card-title"><a href="/products/<%= product.handle %>"><%= product.title %></a></h3>
+    <div class="product-card-price">
+      <span class="price">Rs. <%= formatPrice(product.price) %></span>
+      <% if (product.comparePrice) { %>
+        <span class="compare-price">Rs. <%= formatPrice(product.comparePrice) %></span>
+      <% } %>
+    </div>
+    <form action="/cart/add" method="post" class="quick-add-form">
+      <input type="hidden" name="productId" value="<%= product.id %>" />
+      <select name="size" required>
+        <option value="" disabled selected>Select Size</option>
+        <% product.sizes.forEach(s => { %><option value="<%= s %>"><%= s %></option><% }) %>
+      </select>
+      <input type="hidden" name="qty" value="1" />
+      <button type="submit" class="btn-add">Add to Cart</button>
+    </form>
+  </div>
+</div>

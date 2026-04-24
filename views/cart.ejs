@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<main>
+  <section class="cart-page">
+    <h1>Your Cart</h1>
+
+    <% if (!cart.items.length) { %>
+      <div class="empty-cart">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added anything yet.</p>
+        <a href="/collections/all" class="btn btn-primary">Continue Shopping</a>
+      </div>
+    <% } else { %>
+      <div class="cart-layout">
+        <div class="cart-items">
+          <div class="cart-table-header">
+            <span>Product</span>
+            <span>Price</span>
+            <span>Quantity</span>
+            <span>Total</span>
+          </div>
+          <% cart.items.forEach(item => { %>
+            <div class="cart-item">
+              <div class="cart-item-product">
+                <img src="<%= item.product.images[0] %>" alt="<%= item.product.title %>" />
+                <div class="cart-item-details">
+                  <a href="/products/<%= item.product.handle %>"><%= item.product.title %></a>
+                  <span class="cart-item-size">Size: <%= item.size %></span>
+                  <form action="/cart/remove" method="post">
+                    <input type="hidden" name="itemId" value="<%= item.id %>" />
+                    <button type="submit" class="remove-btn">Remove</button>
+                  </form>
+                </div>
+              </div>
+              <div class="cart-item-price">Rs. <%= formatPrice(item.product.price) %></div>
+              <div class="cart-item-qty">
+                <form action="/cart/update" method="post" class="qty-update-form">
+                  <input type="hidden" name="itemId" value="<%= item.id %>" />
+                  <div class="qty-control-sm">
+                    <button type="submit" name="qty" value="<%= item.qty - 1 %>">−</button>
+                    <span><%= item.qty %></span>
+                    <button type="submit" name="qty" value="<%= item.qty + 1 %>">+</button>
+                  </div>
+                </form>
+              </div>
+              <div class="cart-item-total">Rs. <%= formatPrice(item.product.price * item.qty) %></div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="cart-summary">
+          <h2>Order Summary</h2>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>Rs. <%= formatPrice(total) %></span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span><%= total >= 99900 ? 'FREE' : 'Rs. 99.00' %></span>
+          </div>
+          <% if (total < 99900) { %>
+            <p class="shipping-note">Add Rs. <%= formatPrice(99900 - total) %> more for free shipping!</p>
+          <% } %>
+          <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>Rs. <%= formatPrice(total >= 99900 ? total : total + 9900) %></span>
+          </div>
+          <a href="/checkout" class="btn btn-primary btn-full">Proceed to Checkout</a>
+          <a href="/collections/all" class="btn btn-outline btn-full">Continue Shopping</a>
+
+          <div class="promo-block">
+            <p>🔥 Use code <strong>BELL20</strong> for 20% OFF</p>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

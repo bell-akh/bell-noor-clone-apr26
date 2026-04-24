@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="icon" href="https://www.belle-noor.in/cdn/shop/files/Png-06_70x.png?v=1749296443" />
+</head>
+<body class="admin-body">
+
+<header class="admin-header">
+  <div class="admin-header-inner">
+    <a href="/admin" class="admin-brand">
+      <img src="https://www.belle-noor.in/cdn/shop/files/Png-06_70x.png?v=1749296443" alt="Belle Noor" />
+      <div>
+        <p class="admin-eyebrow">Belle Noor</p>
+        <strong>Admin Dashboard</strong>
+      </div>
+    </a>
+    <div class="admin-header-actions">
+      <a href="/" target="_blank" class="admin-link">View Storefront →</a>
+      <form method="post" action="/admin/logout" style="display:inline;">
+        <button type="submit" class="admin-btn admin-btn-ghost admin-btn-sm">Logout</button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main class="admin-main">
+
+  <!-- Stat bar -->
+  <section class="admin-stats">
+    <div class="stat-card">
+      <p class="stat-label">Products in Store</p>
+      <h2 id="statProducts"><%= stats.productCount %></h2>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Collections</p>
+      <h2 id="statCollections"><%= stats.collectionCount %></h2>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Shopify Connected</p>
+      <h2 id="statConnected"><%= settings.hasToken && settings.shopDomain ? 'Yes' : 'No' %></h2>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Last Sync</p>
+      <h2 id="statLastSync"><%= settings.lastSyncAt ? new Date(settings.lastSyncAt).toLocaleString() : '—' %></h2>
+    </div>
+  </section>
+
+  <div class="admin-grid">
+
+    <!-- Credentials panel -->
+    <section class="admin-card">
+      <div class="admin-card-head">
+        <div>
+          <p class="admin-eyebrow">✦ Connection</p>
+          <h3>Shopify Credentials</h3>
+        </div>
+        <span class="badge <%= settings.hasToken ? 'badge-on' : 'badge-off' %>" id="connBadge">
+          <%= settings.hasToken ? 'Saved' : 'Not configured' %>
+        </span>
+      </div>
+      <p class="admin-help">
+        Create a <strong>Custom App</strong> in your Shopify admin under
+        <em>Settings → Apps and sales channels → Develop apps</em>.
+        Grant it <code>read_products</code>, <code>read_product_listings</code>,
+        and <code>read_inventory</code> scopes, then paste the Admin API access token here.
+      </p>
+
+      <form id="credsForm" class="admin-form">
+        <label for="shopDomain">Store Domain</label>
+        <input type="text" id="shopDomain" name="shopDomain"
+               placeholder="your-store.myshopify.com"
+               value="<%= settings.shopDomain %>" />
+        <p class="admin-hint-sm">Just the sub-domain works too (e.g. <code>belle-noor</code>).</p>
+
+        <label for="accessToken">Admin API Access Token</label>
+        <input type="password" id="accessToken" name="accessToken"
+               placeholder="<%= settings.hasToken ? settings.tokenMask : 'shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx' %>" />
+        <p class="admin-hint-sm">Leave blank to keep the existing token.</p>
+
+        <div class="admin-row">
+          <button type="submit" class="admin-btn admin-btn-primary">Save Credentials</button>
+          <button type="button" id="testBtn" class="admin-btn admin-btn-ghost">Test Connection</button>
+        </div>
+      </form>
+
+      <div id="testResult" class="admin-result" hidden></div>
+    </section>
+
+    <!-- Sync panel -->
+    <section class="admin-card">
+      <div class="admin-card-head">
+        <div>
+          <p class="admin-eyebrow">✦ Data Sync</p>
+          <h3>Sync from Shopify</h3>
+        </div>
+        <span class="badge <%= settings.lastSyncAt ? 'badge-on' : 'badge-off' %>" id="syncBadge">
+          <%= settings.lastSyncAt ? 'Up to date' : 'Never synced' %>
+        </span>
+      </div>
+      <p class="admin-help">
+        Pulls every product, variant, image and collection from your store via the Admin REST API
+        and mirrors them into this clone. Sync is atomic — once it completes, the live site
+        swaps over without a restart.
+      </p>
+
+      <div class="admin-row">
+        <button id="syncBtn" class="admin-btn admin-btn-primary">
+          <span class="btn-spinner" aria-hidden="true"></span>
+          <span class="btn-label">Sync Now</span>
+        </button>
+        <button id="resetBtn" class="admin-btn admin-btn-danger">Clear Synced Data</button>
+      </div>
+
+      <div id="syncLog" class="admin-log" hidden>
+        <div class="admin-log-head">
+          <span>Sync log</span>
+          <span id="syncTime"></span>
+        </div>
+        <pre id="syncLogBody"></pre>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Product preview -->
+  <section class="admin-card admin-card-wide">
+    <div class="admin-card-head">
+      <div>
+        <p class="admin-eyebrow">✦ Live Data</p>
+        <h3>Products Preview <span class="muted">· first 12</span></h3>
+      </div>
+      <a href="/" target="_blank" class="admin-link">Open storefront ↗</a>
+    </div>
+
+    <% if (!products.length) { %>
+      <p class="admin-empty">No products yet. Configure credentials and run your first sync.</p>
+    <% } else { %>
+      <div class="admin-product-grid">
+        <% products.forEach(p => { %>
+          <div class="admin-product">
+            <div class="admin-product-img">
+              <% if (p.images && p.images[0]) { %>
+                <img src="<%= p.images[0] %>" alt="<%= p.title %>" loading="lazy" />
+              <% } %>
+              <% if (p.comparePrice) { %><span class="admin-product-badge">Sale</span><% } %>
+            </div>
+            <div class="admin-product-info">
+              <p class="admin-product-vendor"><%= p.vendor || 'Belle Noor' %></p>
+              <a href="/products/<%= p.handle %>" target="_blank" class="admin-product-title"><%= p.title %></a>
+              <div class="admin-product-price">
+                <strong>Rs. <%= formatPrice(p.price) %></strong>
+                <% if (p.comparePrice) { %><span class="strike">Rs. <%= formatPrice(p.comparePrice) %></span><% } %>
+              </div>
+              <div class="admin-product-meta">
+                <span>Sizes: <%= p.sizes.join(', ') %></span>
+                <span class="<%= p.inStock ? 'ok' : 'bad' %>"><%= p.inStock ? 'In stock' : 'Out of stock' %></span>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+
+</main>
+
+<div id="toast" class="admin-toast" hidden></div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const toast = (msg, ok = true) => {
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'admin-toast ' + (ok ? 'ok' : 'err');
+    t.hidden = false;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { t.hidden = true; }, 4200);
+  };
+
+  async function postJSON(url, body = {}) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+      body: new URLSearchParams(body).toString(),
+    });
+    const json = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data: json };
+  }
+
+  /* Credentials save */
+  $('credsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const shopDomain  = $('shopDomain').value.trim();
+    const accessToken = $('accessToken').value.trim();
+    if (!shopDomain) return toast('Please enter your store domain', false);
+    const { ok, data } = await postJSON('/admin/credentials', { shopDomain, accessToken });
+    if (!ok) return toast(data.error || 'Failed to save', false);
+    $('accessToken').value = '';
+    $('accessToken').placeholder = data.tokenMask || 'shpat_•••••';
+    $('connBadge').textContent = 'Saved';
+    $('connBadge').className = 'badge badge-on';
+    toast('Credentials saved');
+  });
+
+  /* Test connection */
+  $('testBtn').addEventListener('click', async () => {
+    const shopDomain  = $('shopDomain').value.trim();
+    const accessToken = $('accessToken').value.trim();
+    const box = $('testResult');
+    box.hidden = false;
+    box.className = 'admin-result pending';
+    box.textContent = 'Testing connection…';
+    const { ok, data } = await postJSON('/admin/test', { shopDomain, accessToken });
+    if (ok) {
+      box.className = 'admin-result ok';
+      box.innerHTML = '<strong>✓ Connected to ' + (data.shop?.name || 'Shopify') + '</strong>'
+        + '<div class="muted">Domain: ' + (data.shop?.domain || '') + ' · '
+        + 'Currency: ' + (data.shop?.currency || '') + ' · '
+        + 'Country: ' + (data.shop?.country || '') + '</div>';
+    } else {
+      box.className = 'admin-result err';
+      box.textContent = '✗ ' + (data.error || 'Connection failed');
+    }
+  });
+
+  /* Sync */
+  const syncBtn = $('syncBtn');
+  syncBtn.addEventListener('click', async () => {
+    syncBtn.classList.add('loading');
+    syncBtn.querySelector('.btn-label').textContent = 'Syncing…';
+    $('syncLog').hidden = false;
+    $('syncLogBody').textContent = 'Working…\n';
+    $('syncTime').textContent = new Date().toLocaleTimeString();
+
+    try {
+      const res = await fetch('/admin/sync', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+      });
+      const data = await res.json();
+      $('syncLogBody').textContent = (data.log || []).join('\n');
+      if (data.ok) {
+        toast('Synced ' + data.productCount + ' products · ' + data.collectionCount + ' collections');
+        $('statProducts').textContent   = data.productCount;
+        $('statCollections').textContent = data.collectionCount;
+        $('statLastSync').textContent   = new Date(data.at).toLocaleString();
+        $('syncBadge').textContent = 'Up to date';
+        $('syncBadge').className = 'badge badge-on';
+        setTimeout(() => window.location.reload(), 1200);
+      } else {
+        toast(data.error || 'Sync failed', false);
+      }
+    } catch (e) {
+      toast('Sync failed: ' + e.message, false);
+    } finally {
+      syncBtn.classList.remove('loading');
+      syncBtn.querySelector('.btn-label').textContent = 'Sync Now';
+    }
+  });
+
+  /* Reset */
+  $('resetBtn').addEventListener('click', async () => {
+    if (!confirm('Clear all synced products and collections? This will leave the site empty until you sync again.')) return;
+    const { ok, data } = await postJSON('/admin/reset');
+    if (ok) {
+      toast('Cleared synced data');
+      setTimeout(() => window.location.reload(), 800);
+    } else {
+      toast(data.error || 'Reset failed', false);
+    }
+  });
+})();
+</script>
+</body>
+</html>

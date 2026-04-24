@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="icon" href="https://www.belle-noor.in/cdn/shop/files/Png-06_70x.png?v=1749296443" />
+</head>
+<body class="admin-login">
+  <div class="admin-login-bg" aria-hidden="true"></div>
+  <div class="admin-login-card">
+    <a href="/" class="admin-login-logo">
+      <img src="https://www.belle-noor.in/cdn/shop/files/Png-06_70x.png?v=1749296443" alt="Belle Noor" />
+    </a>
+    <p class="admin-eyebrow">✦ Control Centre</p>
+    <h1>Admin Access</h1>
+    <p class="admin-login-sub">Sign in to manage your Shopify sync and storefront data.</p>
+
+    <% if (error) { %>
+      <div class="admin-alert admin-alert-error">Invalid password. Try again.</div>
+    <% } %>
+
+    <form method="post" action="/admin/login" class="admin-form">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required autofocus />
+      <button type="submit" class="admin-btn admin-btn-primary">
+        Enter Dashboard
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+
+    <p class="admin-hint">Default password is set via the <code>ADMIN_PASSWORD</code> env var.<br />Ships with <code>bellenoor-admin</code>.</p>
+  </div>
+</body>
+</html>

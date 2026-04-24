@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+
+<main>
+  <section class="success-page">
+    <div class="success-icon">🎉</div>
+    <h1>Order Confirmed!</h1>
+    <p class="success-sub">Thank you, <strong><%= order.customer.name %></strong>! Your order has been placed successfully.</p>
+    <div class="order-number">Order #<%= order.orderNumber %></div>
+
+    <div class="success-details">
+      <div class="success-address">
+        <h3>Shipping to</h3>
+        <p><%= order.customer.name %></p>
+        <p><%= order.customer.address %>, <%= order.customer.city %></p>
+        <p><%= order.customer.state %> – <%= order.customer.pincode %></p>
+        <p>📞 <%= order.customer.phone %></p>
+      </div>
+
+      <div class="success-items">
+        <h3>Items Ordered</h3>
+        <% order.items.forEach(item => { %>
+          <div class="success-item">
+            <img src="<%= item.product.images[0] %>" alt="<%= item.product.title %>" />
+            <div>
+              <p><%= item.product.title %></p>
+              <small>Size: <%= item.size %> × <%= item.qty %></small>
+            </div>
+            <span>Rs. <%= formatPrice(item.product.price * item.qty) %></span>
+          </div>
+        <% }) %>
+        <div class="success-total">
+          Total: <strong>Rs. <%= formatPrice(order.total) %></strong>
+        </div>
+      </div>
+    </div>
+
+    <p class="success-msg">We'll send a confirmation to <strong><%= order.customer.email %></strong> shortly.</p>
+    <a href="/" class="btn btn-primary">Continue Shopping</a>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

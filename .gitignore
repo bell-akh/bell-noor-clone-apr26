@@ -1,0 +1,9 @@
+node_modules/
+npm-debug.log
+.env
+
+# Admin-generated runtime data — contains Shopify API tokens
+# and the store's live product mirror. Never commit.
+data/settings.json
+data/products.json
+data/collections.json

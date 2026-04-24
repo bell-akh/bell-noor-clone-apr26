@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<main>
+  <section class="collection-page">
+    <div class="collection-header">
+      <h1><%= collection.title %></h1>
+      <p><%= collection.description %></p>
+    </div>
+
+    <div class="collection-toolbar">
+      <span class="product-count"><%= products.length %> product<%= products.length !== 1 ? 's' : '' %></span>
+      <form method="get" class="sort-form">
+        <label for="sort">Sort by:</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="featured" <%= sort === 'featured' ? 'selected' : '' %>>Featured</option>
+          <option value="price-asc" <%= sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+          <option value="price-desc" <%= sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+          <option value="title" <%= sort === 'title' ? 'selected' : '' %>>Alphabetical</option>
+        </select>
+      </form>
+    </div>
+
+    <% if (products.length === 0) { %>
+      <div class="empty-state">
+        <h2>No products found</h2>
+        <a href="/collections/all" class="btn">Shop All</a>
+      </div>
+    <% } else { %>
+      <div class="product-grid">
+        <% products.forEach(product => { %>
+          <%- include('partials/product-card', { product }) %>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
